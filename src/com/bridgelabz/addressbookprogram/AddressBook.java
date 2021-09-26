@@ -1,7 +1,7 @@
 package com.bridgelabz.addressbookprogram;
 
+import java.util.ArrayList;
+
 public class AddressBook {
-	public static void main(String[] args) {
-		System.out.println("Welcome to address Book program");
-	}
+	ArrayList <ContactPerson> contactList = new ArrayList<ContactPerson>();
 }
