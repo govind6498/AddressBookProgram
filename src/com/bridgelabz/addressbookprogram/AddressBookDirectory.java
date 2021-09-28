@@ -1,20 +1,21 @@
 package com.bridgelabz.addressbookprogram;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class AddressBookDirectory {
-	private static final int NUM_OF_ADDRESS_BOOKS = 5;
-	Scanner scannerObject = new Scanner(System.in);
-	AddressBook[] addressBookDirectory = new AddressBook[NUM_OF_ADDRESS_BOOKS];
-	int numOfAddressBooks = 0;
-	
+	public AddressBook addressBook;
+	Scanner scanner = new Scanner(System.in);
+	Map<String, AddressBook> addressBookDirectory = new HashMap<String,AddressBook>();
 	public void operationDirectory() {
-		
-		boolean moreChanges = true;
-		do{
+		boolean moreChange = true;
+		do {
 			System.out.println("\nChoose the operation on the Directory you want to perform");
 			System.out.println("1.Add an Address Book\n2.Edit Existing Address Book\n3.Display Address book Directory\n4.Exit Address book System");
-			switch (scannerObject.nextInt()) {
+			System.out.println("1.Add an Address Book\n2.Edit Existing Address Book\n3.Search Person By City\n4.Search Person By State\n5.Display Address book Directory\n6.Exit Address book System");
+
+			switch (scanner.nextInt()) {
 			case 1:
 				addAddressBook();
 				break;
@@ -22,86 +23,90 @@ public class AddressBookDirectory {
 				editAddressBook();
 				break;
 			case 3:
-				displayDirectoryContents();
+				searchByCity();
 				break;
 			case 4:
-				moreChanges = false;
-				System.out.println("BYE !");
+				searchByState();
+				break;
+			case 5:
+				displayDirectoryContents();
+				break;
+			case 6:
+				moreChange = false;
+				System.out.println("Exiting Address Book Directory !");
 			}
-		}while(moreChanges);
+		} while (moreChange);
 	}
-
 	public void addAddressBook() {
-
-		System.out.println("Enter number of Address Books you want to add to Address book Directory");
-		int numberOfAdditions= scannerObject.nextInt();
-		int endIterator = numberOfAdditions+numOfAddressBooks;
-System.out.println("You can add only "+(NUM_OF_ADDRESS_BOOKS-numOfAddressBooks)+" books");
-
-		String addressBookName = "";
-
-		if(numOfAddressBooks == 0) {
-			System.out.println("Enter the name of the Address Book you want to add");
-			addressBookName = scannerObject.next();
-			AddressBook newAddressBook = new AddressBook();
-			newAddressBook.setAddressBookName(addressBookName);
-			addressBookDirectory[numOfAddressBooks] = newAddressBook;
-			numOfAddressBooks++;
-		}
-
-		if(endIterator > NUM_OF_ADDRESS_BOOKS) {
-			System.out.println("Address Book Directory is FULL !");
-			System.out.println("You can add: "+(NUM_OF_ADDRESS_BOOKS-numOfAddressBooks));
+		System.out.println("Enter the name of the Address Book you want to add");
+		String bookNameToAdd = scanner.next();
+		if(addressBookDirectory.containsKey(bookNameToAdd)) {
+			System.out.println("Book Name Already Exists");
 			return;
 		}
-		else {
-
-			boolean bookExists = false;
-			for(int index=0; index < numOfAddressBooks ; index++) {
-				
-				System.out.println("Enter the name of the Address Book you want to add");
-				addressBookName = scannerObject.next();
-				AddressBook addressBook = addressBookDirectory[index];
-				
-				if(addressBookName.equals(addressBook.getAddressBookName())) {
-					bookExists = true;
-				}
-				
-			}
-			if(bookExists) {
-				System.out.println("Address Book with same name already exists");
-				return;
-			}
-			else {
-				AddressBook newAddressBook = new AddressBook();
-				newAddressBook.setAddressBookName(addressBookName);
-				addressBookDirectory[numOfAddressBooks] = newAddressBook;
-				numOfAddressBooks++;
-			}
-		}
-		
+		AddressBook addressBook = new AddressBook();
+		addressBook.setAddressBookName(bookNameToAdd);
+		addressBookDirectory.put(bookNameToAdd, addressBook);
 	}
-	
 	public void editAddressBook() {
 		System.out.println("Enter the Name of the Address Book which you want to edit:");
-		String addressBookName = scannerObject.next();
-				
-		for(int index = 0; index <numOfAddressBooks; index++) {
-			
-			AddressBook addressBook = addressBookDirectory[index];
-			
-			if(addressBookName.equals(addressBook.getAddressBookName())) {
-				addressBook.operation();
+		String addressBookToEdit = scanner.next();
+		if(addressBookDirectory.containsKey(addressBookToEdit)) {
+			addressBook = addressBookDirectory.get(addressBookToEdit);
+			addressBook.operation();
+		}
+		else {
+			System.out.println("Book Does Not Exist");
+		}
+
+	}
+
+	public void searchByCity() {
+
+		System.out.println("Enter the name of the City where the Person resides : ");
+		String cityName = scanner.next();
+		System.out.println("Enter the name of the Person : ");
+		String personName = scanner.next();
+
+		for(AddressBook addressBook : AddressBook.values()) {
+			for(ContactPerson person : addressBook.getContact()) {
+				if(person.getFirstName().equals(personName) && person.getAddress().getCity().equals(cityName)) {
+					System.out.println(personName+" Found in Address Book : "+addressBook.getAddressBookName()+" !");
+					System.out.println(person);
+					return;
+				}
 			}
 		}
+		System.out.println("Contact Does Not Exist !!");
+
 	}
-	
+
+	public void searchByState() {
+
+		System.out.println("Enter the name of the State where the Person resides : ");
+		String StateName = scanner.next();
+		System.out.println("Enter the name of the Person : ");
+		String personName = scanner.next();
+
+		for(AddressBook addressBook : addressBookDirectory.values()) {
+			for(ContactPerson person : addressBook.getContact()) {
+				if(person.getFirstName().equals(personName) && person.getAddress().getState().equals(StateName)) {
+					System.out.println(personName+" Found in Book : "+addressBook.getAddressBookName()+" !");
+					System.out.println(person);
+					return;
+				}
+			}
+		}
+		System.out.println("Contact Does Not Exist !!");
+
+	}
+
 	public void displayDirectoryContents() {
-		
+
 		System.out.println("----- Contents of the Address Book Directory-----");
-		for(int index=0; index < numOfAddressBooks ; index++) {
-			System.out.println(addressBookDirectory[index]);
-			
+		for (String eachBookName : addressBookDirectory.keySet()) {
+
+			System.out.println(eachBookName);
 		}
 		System.out.println("-----------------------------------------");
 	}
