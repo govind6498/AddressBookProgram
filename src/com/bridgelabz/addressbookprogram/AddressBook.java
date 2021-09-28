@@ -25,6 +25,8 @@ public class AddressBook implements AddressBookIF{
 				displayContect();
 				break;
 			case 4:
+				deletePerson();
+			case 5:
 				moreChange = false;
 				System.out.println("BYE !");
 			}
@@ -120,9 +122,20 @@ public class AddressBook implements AddressBookIF{
 				System.err.println("Contact Not Found!");
 			}
 		}
-
-
-
+}
+	@Override
+	public void deletePerson() {
+		System.out.println("Enter th first name of the person to be deleted");
+		String firstName = scanner.next();
+		Iterator<ContactPerson> iterator = contactList.listIterator();
+		
+		while(iterator.hasNext()) {
+			ContactPerson person = iterator.next();
+			if(firstName.equals(person.getFirstName())) {
+				contactList.remove(person);
+				return;
+			}
+		}
 	}
 	@Override
 	public void displayContect() {
