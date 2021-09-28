@@ -27,8 +27,18 @@ public class AddressBookMain {
 
 		System.out.println("Enter Zip:");
 		long zip =scanner.nextLong();
+		 scanner.close();
+		 
+		 person.setFirstName(firstName);
+		 person.setLastName(lastName);
+		 person.setPhoneNumber(phoneNumber);
+		 person.setEmail(email);
+		 address.setCity(city);
+		 address.setSatate(state);
+		 address.setZip(zip);
+		 
 		AddressBook addressBook = new AddressBook();
 		addressBook.addContact(person);
-		addressBook.displayContents();
+		addressBook.displayContect();
 	}
 }
