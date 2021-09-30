@@ -5,17 +5,18 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class AddressBookDirectory {
+	//	private static final int NUM_OF_ADDRESS_BOOKS = 5;
 	public AddressBook addressBook;
-	Scanner scanner = new Scanner(System.in);
-	Map<String, AddressBook> addressBookDirectory = new HashMap<String,AddressBook>();
+	Scanner scannerObject = new Scanner(System.in);
+	Map<String,AddressBook> addressBookDirectory = new HashMap<String,AddressBook>();
+
+
 	public void operationDirectory() {
-		boolean moreChange = true;
+		boolean moreChanges = true;
 		do {
 			System.out.println("\nChoose the operation on the Directory you want to perform");
-			System.out.println("1.Add an Address Book\n2.Edit Existing Address Book\n3.Display Address book Directory\n4.Exit Address book System");
 			System.out.println("1.Add an Address Book\n2.Edit Existing Address Book\n3.Search Person By City\n4.Search Person By State\n5.Display Address book Directory\n6.Exit Address book System");
-
-			switch (scanner.nextInt()) {
+			switch (scannerObject.nextInt()) {
 			case 1:
 				addAddressBook();
 				break;
@@ -23,6 +24,7 @@ public class AddressBookDirectory {
 				editAddressBook();
 				break;
 			case 3:
+				displayDirectoryContents();
 				searchByCity();
 				break;
 			case 4:
@@ -32,14 +34,16 @@ public class AddressBookDirectory {
 				displayDirectoryContents();
 				break;
 			case 6:
-				moreChange = false;
+				moreChanges = false;
 				System.out.println("Exiting Address Book Directory !");
 			}
-		} while (moreChange);
+		} while (moreChanges);
 	}
+
+
 	public void addAddressBook() {
 		System.out.println("Enter the name of the Address Book you want to add");
-		String bookNameToAdd = scanner.next();
+		String bookNameToAdd = scannerObject.next();
 		if(addressBookDirectory.containsKey(bookNameToAdd)) {
 			System.out.println("Book Name Already Exists");
 			return;
@@ -50,7 +54,7 @@ public class AddressBookDirectory {
 	}
 	public void editAddressBook() {
 		System.out.println("Enter the Name of the Address Book which you want to edit:");
-		String addressBookToEdit = scanner.next();
+		String addressBookToEdit = scannerObject.next();
 		if(addressBookDirectory.containsKey(addressBookToEdit)) {
 			addressBook = addressBookDirectory.get(addressBookToEdit);
 			addressBook.operation();
@@ -60,15 +64,14 @@ public class AddressBookDirectory {
 		}
 
 	}
-
 	public void searchByCity() {
 
 		System.out.println("Enter the name of the City where the Person resides : ");
-		String cityName = scanner.next();
+		String cityName = scannerObject.next();
 		System.out.println("Enter the name of the Person : ");
-		String personName = scanner.next();
+		String personName = scannerObject.next();
 
-		for(AddressBook addressBook : AddressBook.values()) {
+		for(AddressBook addressBook : addressBookDirectory.values()) {
 			for(ContactPerson person : addressBook.getContact()) {
 				if(person.getFirstName().equals(personName) && person.getAddress().getCity().equals(cityName)) {
 					System.out.println(personName+" Found in Address Book : "+addressBook.getAddressBookName()+" !");
@@ -80,13 +83,12 @@ public class AddressBookDirectory {
 		System.out.println("Contact Does Not Exist !!");
 
 	}
-
 	public void searchByState() {
 
 		System.out.println("Enter the name of the State where the Person resides : ");
-		String StateName = scanner.next();
+		String StateName = scannerObject.next();
 		System.out.println("Enter the name of the Person : ");
-		String personName = scanner.next();
+		String personName = scannerObject.next();
 
 		for(AddressBook addressBook : addressBookDirectory.values()) {
 			for(ContactPerson person : addressBook.getContact()) {
@@ -100,7 +102,6 @@ public class AddressBookDirectory {
 		System.out.println("Contact Does Not Exist !!");
 
 	}
-
 	public void displayDirectoryContents() {
 
 		System.out.println("----- Contents of the Address Book Directory-----");
