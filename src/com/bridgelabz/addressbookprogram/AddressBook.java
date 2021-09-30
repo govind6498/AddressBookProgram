@@ -49,6 +49,12 @@ public class AddressBook implements AddressBookIF{
 				sortAddressBook();
 				break;
 			case 6:
+				System.out.println("What Criteria Do You Want Address Book To Be Sorted In ?");
+				System.out.println("1.FirstName\n2.City\n3.State\n4.Zip Code");
+				int sortingChoice = scannerObject.nextInt();
+				sortAddressBook(sortingChoice);
+				break;
+			case 7:
 				moreChanges = false;
 				System.out.println("Exiting Address Book: "+this.getAddressBookName()+" !");
 			}
@@ -59,10 +65,10 @@ public class AddressBook implements AddressBookIF{
 
 		ContactPerson person = new ContactPerson();
 		Address address = new Address();
-		
+
 		System.out.println("Enter First Name: ");
 		String firstName = scannerObject.next();
-		
+
 		contactList.entrySet().stream().forEach(entry -> {
 			if(entry.getKey().equals(firstName.toLowerCase())) {
 				System.out.println("Contact Already Exists");
@@ -70,27 +76,27 @@ public class AddressBook implements AddressBookIF{
 				return;
 			}
 		});
-		
+
 		if(isPresent == false) {
-			
+
 			System.out.println("Enter Last Name: ");
 			String lastName = scannerObject.next();
-			
+
 			System.out.println("Enter Phone Number: ");
 			long phoneNumber = scannerObject.nextLong();
-			
+
 			System.out.println("Enter Email: ");
 			String email = scannerObject.next();
-			
+
 			System.out.println("Enter City: ");
 			String city = scannerObject.next();
-			
+
 			System.out.println("Enter State: ");
 			String state = scannerObject.next();
-			
+
 			System.out.println("Enter Zip Code: ");
 			long zipCode = scannerObject.nextLong();
-			
+
 			person.setFirstName(firstName);
 			person.setLastName(lastName);
 			person.setPhoneNumber(phoneNumber);
@@ -104,7 +110,7 @@ public class AddressBook implements AddressBookIF{
 			contactList.put(firstName.toLowerCase(), person);
 		}
 	}
-	
+
 	public void addPersonToCity(ContactPerson contact) {
 		if (personByCity.containsKey(contact.getAddress().getCity())) {
 			personByCity.get(contact.getAddress().getCity()).add(contact);
@@ -126,14 +132,14 @@ public class AddressBook implements AddressBookIF{
 		}
 	}
 	public void editPerson() {
-		
+
 		ContactPerson person = new ContactPerson();
 		System.out.println("Enter the first name:");
 		String firstName = scannerObject.next();
-		
+
 		if(contactList.containsKey(firstName)) {
 			person = contactList.get(firstName);
-			
+
 			Address address = person.getAddress();
 			System.out.println("\nChoose the attribute you want to change:");
 			System.out.println("1.Last Name\n2.Phone Number\n3.Email\n4.City\n5.State\n6.ZipCode");
@@ -174,8 +180,8 @@ public class AddressBook implements AddressBookIF{
 		else {
 			System.out.println("Book Does Not Exist");
 		}
-		
-		
+
+
 	}
 	@Override
 	public void deletePerson() {
@@ -188,11 +194,11 @@ public class AddressBook implements AddressBookIF{
 		else {
 			System.out.println("Contact Not Found!");
 		}
-		
+
 	}
 	@Override
 	public void displayContents() {
-		
+
 		System.out.println("----- Contents of the Address Book "+this.getAddressBookName()+" -----");
 		for (String eachContact : contactList.keySet()) {
 			ContactPerson person = contactList.get(eachContact);
@@ -215,6 +221,52 @@ public class AddressBook implements AddressBookIF{
 			System.out.println();
 		}
 		System.out.println("-----------------------------------------");
+	}
+
+	public void printSortedList(List<ContactPerson> sortedContactList) {
+		System.out.println("------ Sorted Address Book "+this.getAddressBookName()+" ------");
+		Iterator iterator = sortedContactList.iterator();
+		while (iterator.hasNext()) {
+			System.out.println(iterator.next());
+			System.out.println();
+		}
+		System.out.println("-----------------------------------------");
+	}
+
+	public void sortAddressBook(int sortingChoice) {
+		List<ContactPerson> sortedContactList;
+
+		switch(sortingChoice) {
+
+		case 1: 
+			sortedContactList = contactList.values().stream()
+			.sorted((firstperson, secondperson) -> firstperson.getFirstName().compareTo(secondperson.getFirstName()))
+			.collect(Collectors.toList());
+			printSortedList(sortedContactList);
+			break;
+
+		case 2: 
+			sortedContactList = contactList.values().stream()
+			.sorted((firstperson, secondperson) -> firstperson.getAddress().getCity().compareTo(secondperson.getAddress().getCity()))
+			.collect(Collectors.toList());
+			printSortedList(sortedContactList);
+			break;
+
+		case 3: 
+			sortedContactList = contactList.values().stream()
+			.sorted((firstperson, secondperson) -> firstperson.getAddress().getState().compareTo(secondperson.getAddress().getState()))
+			.collect(Collectors.toList());
+			printSortedList(sortedContactList);
+			break;
+
+		case 4: 
+			sortedContactList = contactList.values().stream()
+			.sorted((firstperson, secondperson) -> Long.valueOf(firstperson.getAddress().getZip()).compareTo(Long.valueOf(secondperson.getAddress().getZip())))
+			.collect(Collectors.toList());
+			printSortedList(sortedContactList);
+			break;
+		}
+
 	}
 
 } 
