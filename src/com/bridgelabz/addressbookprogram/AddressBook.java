@@ -1,5 +1,9 @@
 package com.bridgelabz.addressbookprogram;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -46,15 +50,19 @@ public class AddressBook implements AddressBookIF{
 				deletePerson();
 				break;
 			case 5:
-				sortAddressBook();
-				break;
-			case 6:
 				System.out.println("What Criteria Do You Want Address Book To Be Sorted In ?");
 				System.out.println("1.FirstName\n2.City\n3.State\n4.Zip Code");
 				int sortingChoice = scannerObject.nextInt();
 				sortAddressBook(sortingChoice);
 				break;
+			case 6:
+				writeToAddressBookFile();
+				System.out.println("Written to File");
+				break;
 			case 7:
+				readDataFromFile();
+				break;
+			case 8:
 				moreChanges = false;
 				System.out.println("Exiting Address Book: "+this.getAddressBookName()+" !");
 			}
@@ -268,5 +276,37 @@ public class AddressBook implements AddressBookIF{
 		}
 
 	}
-
+	public void writeToAddressBookFile() {
+		String bookName = this.getAddressBookName();
+		String fileName = bookName+".txt";
+		StringBuffer addressBookBuffer = new StringBuffer();
+		contactList.values().stream().forEach(contact->{
+			String personDataString = contact.toString().concat("\n");
+			addressBookBuffer.append(personDataString);
+		});
+		try {
+			Files.write(Paths.get(fileName), addressBookBuffer.toString().getBytes());
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public List<String> readDataFromFile(){
+		List<String> addressBookList = new ArrayList<String>();
+		String bookName = this.getAddressBookName();
+		String fileName = bookName = bookName+".txt";
+		System.out.println("Reading from : "+fileName+"\n");
+		try {
+			Files.lines(new File(fileName).toPath())
+			.map(line->line.trim())
+			.forEach(employeeDetails->{
+				System.out.println(employeeDetails);
+				addressBookList.add(employeeDetails);
+			});
+		}
+		catch(IOException e) {
+			e.printStackTrace();
+		}
+		return addressBookList;
+	}
 } 
